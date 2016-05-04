@@ -12,7 +12,11 @@ import React, {
     ScrollView
 } from 'react-native';
 
+import moreComment from "./moreComment";
+import RenderCommentList from "./renderCommentList";
+import Toolbar from "./Toolbar";
 
+var id, name;
 export default class filmInfo extends Component {
     constructor(props, params) {
         super(props);
@@ -23,14 +27,18 @@ export default class filmInfo extends Component {
     }
     componentDidMount() {
         this.fetchData();
+        id = this.props.id;
+        name = this.props.name;
     }
     fetchData() {
         var url = "http://m.maoyan.com/movie/" + this.props.id + ".json";
         fetch(url)
             .then((response) => response.json())
             .then((responseData) => {
+                var Comments = responseData.data.CommentResponseModel.hcmts;
+                Comments.length = 5;
                 this.setState({
-                    dataSource: responseData.data.CommentResponseModel.hcmts,
+                    dataSource: Comments,
                     filmData: responseData.data.MovieDetailModel
                 })
 
@@ -45,11 +53,9 @@ export default class filmInfo extends Component {
             return (
                 <View style={styles.container}>
                     <Toolbar {...this.props} navigator={this.props.navigator} />
-                    <ScrollView  contentContainerStyle={styles.scrollView}>
-                        <View style={styles.content}>
-                            <FilmDetail filmData={this.state.filmData} />
-                            <Comments dataSource={this.state.dataSource} />
-                        </View>
+                    <ScrollView style={styles.ScrollView}>
+                        <FilmDetail filmData={this.state.filmData} />
+                        <Comments dataSource={this.state.dataSource} navigator={this.props.navigator} />
                     </ScrollView>
                 </View>
             )
@@ -58,23 +64,7 @@ export default class filmInfo extends Component {
 
 }
 
-// toolbar
-class Toolbar extends Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <View style={styles.toolbar}>
-                <TouchableOpacity style={styles.backIcon}  onPress={this.back.bind(this) }></TouchableOpacity>
-                <Text style={styles.title}>{this.props.name}</Text>
-            </View>
-        )
-    }
-    back() {
-        this.props.navigator.pop();
-    }
-}
+
 
 // info
 
@@ -88,7 +78,12 @@ class FilmDetail extends Component {
         verText = verText.replace(/[\u4e00-\u9fa5]+/g, '').replace(/\/$/, '');
         var dra = data.dra || "";
         dra = dra.replace(/<p>/, '').replace(/<\/p>/, '');
-
+        var scoreView="";
+        if(data.showSnum){
+           scoreView =  <View style={styles.scoreView}><Text style={styles.score}>{data.sc}分</Text><Text style={styles.snum}>({data.snum}人评分) </Text></View>           
+        }else{
+           scoreView =  <View style={styles.scoreView}><Text style={styles.score}>{data.wish}人想看</Text></View>
+        }
         return (
             <View style={styles.detailWrap}>
                 <View style={styles.detailView}>
@@ -99,11 +94,8 @@ class FilmDetail extends Component {
                             <View style={styles.verView}>
                                 <Text style={styles.verText}>{verText}</Text>
                             </View>
-                        </View>
-                        <View style={styles.scoreView}>
-                            <Text style={styles.score}>{data.sc}分</Text>
-                            <Text style={styles.snum}>({data.snum}人评分) </Text>
-                        </View>
+                        </View>                       
+                           {scoreView}                        
 
                         <Text style={styles.textLineHeight}>{data.cat}</Text>
                         <Text style={styles.textLineHeight}>{data.src}/{data.dur}分钟</Text>
@@ -150,50 +142,42 @@ class Comments extends Component {
                         renderRow={this.renderComments}
                         style={styles.commentRows}
                         />
+                    <TouchableOpacity style={styles.moreView} onPress={()=>this.moreComment()}>
+                        <Text style={styles.more}>查看全部评论</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         )
     }
 
     renderComments(data) {
-        var star = ~~data.score;
-        var arr = [];
-        for (var i = 0; i < star; i++) {
-            arr.push(i)
-        }
         return (
-            <View style={styles.comments}>
-                <View style={styles.starView}>
-                    <View style={styles.stars}>
-                        {
-                            arr.map(function (i) {
-                                return <Image source={require('../images/star.png') } style={styles.starIcon}></Image>
-                            })                            
-                        }
-                           
-                    </View>
-                    <Text>{data.time}</Text>
-                </View>
-                <Text style={styles.commentsText}>{data.content}</Text>
-                <View style={styles.userView}>
-                    <Image source={{ uri: data.avatarurl }} style={styles.avatar}></Image>
-                    <Text style={styles.nickName}>{data.nickName}</Text>
-                </View>
-            </View>
+            <RenderCommentList data={data} />
         )
     }
-
+    // more
+    moreComment() {
+        this.props.navigator.push({
+            name: "moreComment",
+            component: moreComment,
+            params: {
+                id: id,
+                name: name
+            }
+        });
+    }
 }
+
+
+module.export = { Toolbar}
 
 var styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#eee",
-        flexDirection:"column"
-
     },
-    scrollView: {
-        height: 1800,
+    ScrollView: {
+        flex: 1,
     },
     toolbar: {
         height: 40,
@@ -205,26 +189,21 @@ var styles = StyleSheet.create({
     backIcon: {
         borderLeftWidth: 1,
         borderTopWidth: 1,
-        height: 12,
-        width: 12,
+        height: 16,
+        width: 16,
         borderColor: "#fff",
-        marginLeft: 10,
+        marginLeft: 20,
         transform: [{ rotate: "-45deg" }]
     },
     content: {
-        flex: 1,
+        // flex: 1,
     },
     filmCover: {
         width: 108,
         height: 148,
         borderWidth: 1,
         borderColor: "#fff"
-    },
-    title: {
-        flex: 1,
-        color: "#fff",
-        textAlign: "center",
-    },
+    },    
     scoreView: {
         flexDirection: 'row',
         alignItems: 'flex-end',
@@ -297,13 +276,11 @@ var styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderTopWidth: 1,
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        marginBottom: 10
     },
     navTitle: {
         lineHeight: 30
-    },
-    commentRows: {
-
     },
     comments: {
         paddingTop: 20,
@@ -338,7 +315,18 @@ var styles = StyleSheet.create({
     starText: {
         color: "#ff9a00",
     },
-    stars:{
-        flexDirection:'row'
+    stars: {
+        flexDirection: 'row'
+    },
+    moreView: {
+        borderTopWidth: 1,
+        borderColor: "#e1e1e1",
+        justifyContent: "center",
+        alignItems: "center",
+        height: 38,
+    },
+    more: {
+        textAlign: "center",
+        color: "#e54847"
     }
 })

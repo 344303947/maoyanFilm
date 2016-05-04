@@ -26,8 +26,6 @@ export default class filmList extends Component {
             </View>
         )
     }
-    
-
 }
 
 // toolbar
