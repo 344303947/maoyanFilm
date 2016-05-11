@@ -156,7 +156,7 @@ class Comments extends Component {
         )
     }
     // more
-    moreComment() {
+    moreComment() {        
         this.props.navigator.push({
             name: "moreComment",
             component: moreComment,
