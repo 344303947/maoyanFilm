@@ -13,7 +13,7 @@ import React, {
 import sale from './sale';
 import filmInfo from './filmInfo'
 
-var films = "http://m.maoyan.com/movie/list.json?type=hot&offset=0&limit=1000";
+
 export default class filmList extends Component {
     constructor(props){
         super(props);
@@ -49,8 +49,7 @@ class List extends Component {
         this.state = {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
-            }),
-            loaded: false,
+            }),            
         }
         
     }
@@ -58,6 +57,7 @@ class List extends Component {
         this.fetchData();
     }
     fetchData() {
+        var films = "http://m.maoyan.com/movie/list.json?type=hot&offset=0&limit=1000";
         fetch(films)
             .then((response) => response.json())
             .then((responseData) => {
