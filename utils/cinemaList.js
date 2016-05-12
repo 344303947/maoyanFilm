@@ -9,8 +9,9 @@ import React, {
     ScrollView
 } from 'react-native';
 
-import Toolbar from "./Toolbar";
-var _data;
+import Toolbar,{ToolbarHome} from "./Toolbar";
+import cinemaDetail from "./cinemaDetail";
+
 export default class cinemaList extends Component {
     constructor(props) {
         super(props);
@@ -29,19 +30,18 @@ export default class cinemaList extends Component {
         fetch(url)
             .then((response) => response.json())
             .then((responseData) => {
-                _data = responseData.data;
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRowsAndSections(responseData.data),
-                    //  dataHeader:responseData.data
                 })
             })
     }
     render() {
         return (
-            <View style={styles.container}>              
+            <View style={styles.container}>  
+                <ToolbarHome />       
                 <ListView
                     dataSource={this.state.dataSource}
-                    renderRow={this._renderCinema}
+                    renderRow={this._renderCinema.bind(this)}
                     renderSectionHeader={this._renderHeader}
                     style={styles.ListView}
                     />
@@ -49,10 +49,9 @@ export default class cinemaList extends Component {
 
         )
     }
-    _renderCinema(rowData, sectionId, rowId) {
-        
+    _renderCinema(rowData, sectionId, rowId) {        
         return (
-            <TouchableOpacity style={styles.cinemaRow}>
+            <TouchableOpacity style={styles.cinemaRow} onPress={()=>{this._onPress(rowData.id,rowData.nm)}}>
                 <View style={styles.nameView}>
                     <Text style={styles.nameText}>{rowData.nm}</Text>
                     <View style={styles.sateView}>
@@ -64,12 +63,21 @@ export default class cinemaList extends Component {
         )
     }
     _renderHeader(sectionData, sectionId) {
-        console.log(sectionId)
         return (
             <View style={styles.regionView}>
                 <Text style={styles.regionText}>{sectionId}</Text>
             </View>
         );
+    }
+    _onPress(id,name){
+        this.props.navigator.push({
+            name: "cinemaDetail",            
+            component: cinemaDetail,
+            params:{
+                id:id,
+                name:name
+            }
+        });
     }
 }
 

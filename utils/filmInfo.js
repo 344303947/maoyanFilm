@@ -26,9 +26,9 @@ export default class filmInfo extends Component {
         }
     }
     componentDidMount() {
-        this.fetchData();
         id = this.props.id;
         name = this.props.name;
+        this.fetchData();
     }
     fetchData() {
         var url = "http://m.maoyan.com/movie/" + this.props.id + ".json";

@@ -12,7 +12,7 @@ import React, {
 
 import sale from './sale';
 import filmInfo from './filmInfo'
-
+import {ToolbarHome} from "./Toolbar";
 
 export default class filmList extends Component {
     constructor(props){
@@ -21,26 +21,13 @@ export default class filmList extends Component {
     render() {        
         return (
             <View style={styles.container}>
-                <Toolbar />
+                <ToolbarHome />
                 <List navigator={this.props.navigator} />
             </View>
         )
     }
 }
 
-// toolbar
-class Toolbar extends Component {
-    render() {
-        return (
-            <ToolbarAndroid
-                logo={require('../images/logo.png') }
-                title=""
-                action={[{ title: '城市', icon: require('../images/location.png'), show: "always" }]}              
-                style={styles.toolbar}
-                />
-        )
-    }
-}
 
 // listView
 class List extends Component {
