@@ -66,7 +66,6 @@ class List extends Component {
     }
 
     getFilmInfo(id, name) {
-        console.log(this.props.navigator.getCurrentRoutes())
         this.props.navigator.push({
             name: "filmInfo",            
             component: filmInfo,
@@ -75,7 +74,6 @@ class List extends Component {
                 name:name
             }
         });
-        console.log(this.props.navigator.getCurrentRoutes())
     }
     
     sale(){
