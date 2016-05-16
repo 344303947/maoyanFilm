@@ -5,6 +5,22 @@
 
 不要问我为什么没有IOS版，因为我买不起Mac啊...
 
+## 运行
+1. 进入根目录，安装依赖:`npm install`
+2. 连接手机机或者虚拟机
+3. 运行`react-native start` `react-native run-android`
+
+
+
+## 用到的React Native技术
+* Flex 布局
+* Image/Text/ListView/TouchableOpacity/ToolbarAndroid/Navigator/ScrollView/ProgressBarAndroid等组件
+* ScrollView纵向、横向列表
+* Tabbar导航
+* Tab选项卡局部切换
+* ScrollView上拉加载
+* ...
+
 ## 主要界面：
 影片列表：
 
@@ -25,21 +41,6 @@
 登录界面:
 
 ![](./images/user.png)
-## 运行
-1. 进入根目录，安装依赖:`npm install`
-2. 连接手机机或者虚拟机
-3. 运行`react-native start` `react-native run-android`
-
-
-
-## 用到的React Native技术
-* Flex 布局
-* Image/Text/ListView/TouchableOpacity/ToolbarAndroid/Navigator/ScrollView/ProgressBarAndroid等组件
-* ScrollView纵向、横向列表
-* Tabbar导航
-* Tab选项卡局部切换
-* ScrollView上拉加载
-* ...
 
 
 ## TODO
