@@ -15,9 +15,11 @@
 ![](./images/filmInfo.png)
 
 影院列表：
+
 ![](./images/cinemaList.png)
 
 影院详情：
+
 ![](./images/cinemaList.png)
 
 登录界面:
