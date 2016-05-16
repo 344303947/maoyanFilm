@@ -5,12 +5,24 @@
 
 不要问我为什么没有IOS版，因为我买不起Mac啊...
 
-## maoyanFilm长这样：
+## 主要界面：
+影片列表：
 
 ![](./images/home.png)
 
+影片详情：
+
 ![](./images/filmInfo.png)
 
+影院列表：
+![](./images/cinemaList.png)
+
+影院详情：
+![](./images/cinemaList.png)
+
+登录界面:
+
+![](./images/user.png)
 ## 运行
 1. 进入根目录，安装依赖:`npm install`
 2. 连接手机机或者虚拟机
@@ -19,20 +31,20 @@
 
 
 ## 用到的React Native技术
-* Flex Style
-* Native UI Components
-* Image/Text/ListView
-* TouchableHighlight
-* ToolbarAndroid
-* Navigator
-* StyleSheet
+* Flex 布局
+* Image/Text/ListView/TouchableOpacity/ToolbarAndroid/Navigator/ScrollView/ProgressBarAndroid等组件
+* ScrollView纵向、横向列表
+* Tabbar导航
+* Tab选项卡局部切换
+* ScrollView上拉加载
 * ...
 
+
 ## TODO
-- [x] 更多评论列表
+- [X] 更多评论列表
 - [X] 影院列表页
-- [ ] 影院详情页
+- [X] 影院详情页
 - [ ] ~~选座页网上的API返回数据有问题~~
-- [ ] 登录页
+- [X] 登录页
 
 
