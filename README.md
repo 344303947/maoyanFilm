@@ -21,26 +21,11 @@
 * ScrollView上拉加载
 * ...
 
-## 主要界面：
-影片列表：
+## 演示：
 
-![](./images/index.png)
-
-影片详情：
-
-![](./images/filmInfos.png)
-
-影院列表：
-
-![](./images/cinemaList.png)
-
-影院详情：
-
-![](./images/cineDetail.png)
-
-登录界面:
-
-![](./images/user.png)
+**影片列表：**
+(录制于原生安卓模拟器,真机效果会更流畅)
+![](./images/demo.gif)
 
 
 ## TODO
