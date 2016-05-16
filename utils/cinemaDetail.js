@@ -8,12 +8,13 @@ import React, {
     ScrollView,
     Image,
     ProgressBarAndroid,
+    Alert
 } from 'react-native';
 
 import Toolbar, {ToolbarHome} from "./Toolbar";
 
 var id, name, data;
-var moiveIndex = 0, dataIndex = 0;
+var movieIndex = 0, dateIndex = 0;
 var date = new Date();
 var month = date.getMonth() + 1;
 month = (month) < 10 ? "0" + month : month;
@@ -26,43 +27,55 @@ export default class cinemaDetail extends Component {
                 rowHasChanged: (row1, row2) => row1 !== row2,
             }),
             data: null,
-            index:0
+            date: initDate,
+            loading: false
         }
     }
     componentDidMount() {
-        this.fetchData();
+        this.fetchData("");
     }
-    fetchData() {
-        var url = "http://m.maoyan.com/showtime/wrap.json?cinemaid=" + this.props.id + "&movieid=";
+    fetchData(_id) {
+        var id = _id;
+        var url = "http://m.maoyan.com/showtime/wrap.json?cinemaid=" + this.props.id + "&movieid=" + id;
+        if (_id != "") {
+            this.setState({
+                loading: true,
+            });
+        }
         fetch(url)
             .then((response) => response.json())
             .then((responseData) => {
                 data = responseData.data;
                 var showModel = data.DateShow[initDate];
-
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(showModel),
-                    data: responseData.data
+                    data: responseData.data,
+                    loading: false
                 })
+
             })
     }
     render() {
         return (
             <View style={styles.container}>
                 <Toolbar {...this.props} navigator={this.props.navigator} />
+                {this.loadingData() }
                 {this.renderInfo() }
             </View>
         )
     }
+    loadingData() {
+        if (this.state.loading) {
+            return <View><ProgressBarAndroid color="#e54847" styleAttr="Horizontal" indeterminate={true} /></View>
+        }
+    }
     renderInfo() {
         var data = this.state.data;
-        console.log(data)
         if (!data) {
             return (
                 <View><ProgressBarAndroid  color="red" styleAttr='Inverse'/></View>
             )
         }
-
         // 影院信息
         var cinemaDetailModel = data.cinemaDetailModel;
         var cinemaInfo =
@@ -73,13 +86,11 @@ export default class cinemaDetail extends Component {
 
         // 当前电影
         var currentMovieModel;
-        
         // 所有电影
         var moviesModel = data.movies;
         var movies = []
         for (var i = 0; i < moviesModel.length; i++) {
-            var _index = (i+1);
-            if (i == moiveIndex) {
+            if (i == movieIndex) {
                 currentMovieModel = moviesModel[i];
                 movies.push(
                     <TouchableOpacity style= { styles.movieView } >
@@ -89,7 +100,7 @@ export default class cinemaDetail extends Component {
                 continue;
             }
             movies.push(
-                <TouchableOpacity style={styles.movieView} onPress={this._onPressMovie.bind(this)}  ref={()=>{_index}}>
+                <TouchableOpacity style={styles.movieView} onPress={this._onPressMovie.bind(this, i, moviesModel[i].id) } >
                     <Image source={{ uri: moviesModel[i].img }} style={styles.movieImg}></Image>
                 </TouchableOpacity>
             )
@@ -98,41 +109,32 @@ export default class cinemaDetail extends Component {
         var dateView = [];
         var dateModel = data.Dates;
         for (var i = 0; i < dateModel.length; i++) {
-            if (i == dataIndex) {
+            if (i == dateIndex) {
                 dateView.push(
-                    <TouchableOpacity style={[styles.dateView, styles.dateViewCur]} date={dateModel[i].slug}  >
+                    <TouchableOpacity style={[styles.dateView, styles.dateViewCur]} >
                         <Text style={styles.dateTextCur}>{dateModel[i].text}</Text>
                     </TouchableOpacity>
                 )
                 continue;
             }
             dateView.push(
-                <TouchableOpacity style={styles.dateView} date={dateModel[i].slug}  >
+                <TouchableOpacity style={styles.dateView} onPress={this._onPressDate.bind(this, i, dateModel[i].slug) } >
                     <Text style={styles.dateText}>{dateModel[i].text}</Text>
                 </TouchableOpacity>
             )
         }
-        // 场次
 
-        // var dateModel = data.Dates;
-        // var showModel = data.DateShow[initDate];
-        // var showView = [];
-        // for (var i in showModel) {
-        //     showView.push(
-        //         <View style={styles.showModel}>
-        //             <View>
-        //                 <Text>{showModel[i].tm}</Text>
-        //                 <Text>{showModel[i].end}</Text>
-        //             </View>
-        //             <View>
-        //                 <Text>{showModel[i].lang}</Text><Text>{showModel[i].tp}</Text>
-        //                 <Text>{showModel[i].th}</Text>
-        //             </View>
-        //         </View>
-        //     )
-        // }
-        // console.log(showModel)
-
+        var List;
+        if (this.state.dataSource._cachedRowCount == 0) {
+            List = <View style={styles.emptyList}><Text>今天已无放映场次</Text></View>
+        } else {
+            List = <ListView
+                dataSource={this.state.dataSource}
+                renderRow={this._renderCinemaDetail.bind(this)}
+                style={styles.ListView}
+                />
+        }
+        
         return (
             <View style={styles.content}>
                 {cinemaInfo}
@@ -149,28 +151,26 @@ export default class cinemaDetail extends Component {
                         {dateView}
                     </ScrollView>
                 </View>
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={this._renderCinemaDetail}
-                    style={styles.ListView}
-                    />
-                {/* 
-    */}
+
+                {List}
             </View>
 
         )
     }
-    _onPressMovie(){
-        //    moiveIndex =_index;
-           console.log(this.refs)
-            // this.setState({
-            //   index:_index  
-            // })
+    _onPressMovie(_index, _id) {
+        movieIndex = _index;
+        dateIndex = 0; // 重置日期
+        this.fetchData(_id);
     }
-    _onPressDate(){
-           dateIndex = this.props._index;
+    _onPressDate(_index, _date) {
+        dateIndex = _index;
+        var showModel = data.DateShow[_date];
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(showModel),
+        });
+
     }
-    
+
     _renderCinemaDetail(showModel) {
         return (
             <View style={styles.showModel}>
@@ -190,14 +190,17 @@ export default class cinemaDetail extends Component {
                     <Text style={styles.priceText}>原价100</Text>
                 </View>
                 <View style={styles.buyView}>
-                    <TouchableOpacity style={styles.buyButton}>
+                    <TouchableOpacity style={styles.buyButton} onPress={() => this.sale()}>
                         <Text style={styles.buyText}>选座购票</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         )
     }
-    
+    sale(){
+        Alert.alert("提示","没有API,暂无购票能使用！")
+    }
+
 }
 
 
@@ -324,5 +327,12 @@ const styles = StyleSheet.create({
     },
     ListView: {
         flex: 1
+    },
+    emptyList:{
+        
+        backgroundColor:"#fff",
+        alignItems:"center",
+        justityContent:"center",
+        padding:20
     }
 });

@@ -7,7 +7,8 @@ import React, {
     ToolbarAndroid,
     ListView,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert    
 } from 'react-native';
 
 import sale from './sale';
@@ -77,9 +78,7 @@ class List extends Component {
     }
     
     sale(){
-         this.props.navigator.push({          
-            component: sale,
-        });        
+        Alert.alert("提示","没有API,暂无购票能使用！")
     }
     
     renderFilm(film) {

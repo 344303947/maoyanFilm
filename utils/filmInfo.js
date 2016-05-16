@@ -9,7 +9,8 @@ import React, {
     Image,
     TouchableOpacity,
     WebView,
-    ScrollView
+    ScrollView,
+    Alert
 } from 'react-native';
 
 import moreComment from "./moreComment";
@@ -103,9 +104,9 @@ class FilmDetail extends Component {
                     </View>
                 </View>
                 <View style={styles.draView}>
-                    <View style={styles.bigBtn} >
+                    <TouchableOpacity style={styles.bigBtn} onPress={() => this.sale()}>
                         <Text style={styles.bigBtnText}>立即购票</Text>
-                    </View>
+                    </TouchableOpacity>
                     <Text>{dra}</Text>
                 </View>
                 <View style={styles.navView}>
@@ -115,6 +116,10 @@ class FilmDetail extends Component {
             </View>
         )
     }
+    sale(){
+        Alert.alert("提示","没有API,暂无购票能使用！")
+    }
+    
 }
 
 class Comments extends Component {
