@@ -23,9 +23,9 @@
 
 ## 演示：
 
-**影片列表：**
 (录制于原生安卓模拟器,真机效果会更流畅)
-![](./images/demo.gif)
+
+![](http://yunl.sinaapp.com/images/filmApp.gif)
 
 
 ## TODO
