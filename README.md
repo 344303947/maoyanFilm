@@ -27,7 +27,6 @@
 
 ![](http://yunl.sinaapp.com/images/filmApp.gif)
 
-
 ## TODO
 - [X] 更多评论列表
 - [X] 影院列表页
