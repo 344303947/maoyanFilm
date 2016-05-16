@@ -8,11 +8,11 @@
 ## 主要界面：
 影片列表：
 
-![](./images/home.png)
+![](./images/index.png)
 
 影片详情：
 
-![](./images/filmInfo.png)
+![](./images/filmInfos.png)
 
 影院列表：
 
@@ -20,7 +20,7 @@
 
 影院详情：
 
-![](./images/cinemaList.png)
+![](./images/cineDetail.png)
 
 登录界面:
 
